@@ -4,6 +4,7 @@ import * as React from "react";
 import Root from "../components/root/Root";
 import Login from "../components/login/Login";
 import { createBrowserRouter } from "react-router-dom";
+import Layout from "../components/admin/layout/Layout";
 
 const router = createBrowserRouter([
     {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
             },
         ],
     },
+    {
+        path: "admin",
+        element: <Layout />,
+    }
 ]);
 
 export default router;
