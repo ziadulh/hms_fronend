@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import Loader from '../loader/Loader';
+import { toast } from 'react-toastify';
 import './Login.css'
+import LoaderContext from '../../contexts/loadder/LoaderContext';
 
 const Login = () => {
 
@@ -8,7 +11,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   //root url
-  const url_local = process.env.REACT_APP_URL;
+  const url_local = process.env.REACT_APP_ROOT_URL;
 
   // checking whether already logged in 
   useEffect(() => {
@@ -25,10 +28,14 @@ const Login = () => {
     setLoginData({ ...loginData, [event.target.name]: event.target.value })
   }
 
+  const context = useContext(LoaderContext);
+  const { isLoaderEnable, setIsLoaderEnable } = context;
+
   //login 
   const handleLogin = async (e) => {
     e.preventDefault(); //preventing form submission
     try {
+      setIsLoaderEnable(true);
       const response = await fetch(url_local + "api/authentication/login", {
         method: 'POST',
         headers: {
@@ -38,22 +45,24 @@ const Login = () => {
         body: JSON.stringify({ email: loginData.email, password: loginData.password })
       });
 
-      // converting response to jso
+      // converting response to json
       let json = await response.json();
 
       if (json.status === true) {
         localStorage.setItem('auth-token', json.authToken);
         navigate('/')
-        console.log(json);
+        json.success.forEach(el => {
+          toast.success(el.msg);
+        });
       } else {
-        console.log(json);
-        // json.errors.forEach(el => {
-        //   toast.error(el.msg);
-        // });
+        json.errors.forEach(el => {
+          toast.error(el.msg);
+        });
       }
     } catch (error) {
-      console.log(error);
-
+      toast.error("Oops! Something went wrong.");
+    } finally {
+      setIsLoaderEnable(false);
     }
 
   }
@@ -61,6 +70,7 @@ const Login = () => {
 
   return (
     <>
+      {isLoaderEnable && <Loader />}
       <div className="login-box">
         <h2 className="heading-login-box">Login</h2>
         <form onSubmit={handleLogin}>
