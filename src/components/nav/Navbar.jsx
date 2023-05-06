@@ -1,7 +1,13 @@
-import React from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { toast } from 'react-toastify';
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import LoaderContext from '../../contexts/loadder/LoaderContext';
+import Loader from '../loader/Loader';
 
 const Navbar = () => {
+
+    // useNavigate to navigate url
+    const navigate = useNavigate();
 
     //root url
     const url_local = process.env.REACT_APP_ROOT_URL;
@@ -9,9 +15,16 @@ const Navbar = () => {
     //get current route
     let location = useLocation();
 
+    // context from LoaderContext
+    const context = useContext(LoaderContext);
+    const { isLoaderEnable, setIsLoaderEnable } = context;
+
+    // auth token
+    let auth_token = localStorage.getItem('auth-token')
+
     const handleLogout = async () => {
         try {
-            let auth_token = localStorage.getItem('auth-token')
+            setIsLoaderEnable(true);
             localStorage.removeItem('auth-token');
             const response = await fetch(url_local + "api/authentication/logout", {
                 method: 'POST',
@@ -20,26 +33,29 @@ const Navbar = () => {
                     'auth_token': auth_token
                 },
             });
+            // converting response to json
             let json = await response.json();
-            console.log(json);
 
-            // if (json.status === true) {
-            //   localStorage.setItem('auth-token', json.authToken);
-            //   navigate('/')
-            //   console.log(json);
-            // } else {
-            //   console.log(json);
-            //   // json.errors.forEach(el => {
-            //   //   toast.error(el.msg);
-            //   // });
-            // }
+            if (json.status === true) {
+                localStorage.removeItem('auth-token', json.authToken);
+                navigate('/login')
+                json.success.forEach(el => {
+                    toast.success(el.msg);
+                });
+            } else {
+                json.errors.forEach(el => {
+                    toast.error(el.msg);
+                });
+            }
         } catch (error) {
-            console.log(error);
-
+            toast.error("Oops! Something went wrong.");
+        } finally {
+            setIsLoaderEnable(false);
         }
     }
     return (
         <div>
+            {isLoaderEnable && <Loader />}
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container-fluid">
                     <Link className="navbar-brand" to="/">Navbar</Link>
@@ -51,12 +67,12 @@ const Navbar = () => {
                             <li className="nav-item">
                                 <Link className={`nav-link ${location.pathname === '/' ? 'active' : ''}`} aria-current="page" to="/">Home</Link>
                             </li>
-                            <li className="nav-item">
+                            {!auth_token && <li className="nav-item">
                                 <Link className={`nav-link ${location.pathname === '/login' ? 'active' : ''}`} to="/login">Login</Link>
-                            </li>
+                            </li>}
                         </ul>
 
-                        <button className="btn btn-outline-success" type="button" onClick={handleLogout}>LogOut</button>
+                        {auth_token && <button className="btn btn-outline-success" type="button" onClick={handleLogout}>LogOut</button>}
                     </div>
                 </div>
             </nav>
