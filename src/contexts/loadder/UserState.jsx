@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import UserContext from './UserContext'
 
-const LoaderState = (props) => {
-    //root url
-    const url_local = process.env.REACT_APP_ROOT_URL;
-  let [users, setUsers] = useState({})
+const UserState = (props) => {
+  //root url
+  const url_local = process.env.REACT_APP_ROOT_URL;
+  let [users, setUsers] = useState([])
 
   //get users 
   const getUsers = async () => {
@@ -22,7 +22,10 @@ const LoaderState = (props) => {
 
       // converting response to json
       let json = await response.json();
-      console.log(json);
+      setUsers(json.users);
+      
+      // setTeste({ name: "fjdsf" });
+      // console.log(teste);
     } catch (error) {
       // toast.error("Oops! Something went wrong.");
     } finally {
@@ -31,11 +34,11 @@ const LoaderState = (props) => {
   }
   return (
     <div>
-        <UserContext.Provider value={{users, setUsers, getUsers}}>
-            {props.children}
-        </UserContext.Provider>
+      <UserContext.Provider value={{ users, setUsers, getUsers }}>
+        {props.children}
+      </UserContext.Provider>
     </div>
   )
 }
 
-export default LoaderState
+export default UserState

@@ -7,10 +7,10 @@ import LoaderContext from '../../contexts/loadder/LoaderContext';
 
 const Login = () => {
 
-  // useNavigate to navigate url
+  // useNavigate to navigate url 
   const navigate = useNavigate();
 
-  //root url
+  //root url 
   const url_local = process.env.REACT_APP_ROOT_URL;
 
   // checking whether already logged in 
@@ -20,7 +20,7 @@ const Login = () => {
     }
   }, [navigate]);
 
-  // to hold and update login credentials
+  // to hold and update login credentials 
   let [loginData, setLoginData] = useState({ email: "", password: "" });
 
   // updating login credentials 
@@ -28,10 +28,11 @@ const Login = () => {
     setLoginData({ ...loginData, [event.target.name]: event.target.value })
   }
 
+  // context from LoaderContext
   const context = useContext(LoaderContext);
   const { isLoaderEnable, setIsLoaderEnable } = context;
 
-  //login 
+  // login 
   const handleLogin = async (e) => {
     e.preventDefault(); //preventing form submission
     try {

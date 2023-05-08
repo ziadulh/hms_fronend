@@ -1,6 +1,7 @@
 import React from 'react'
 import Navigation from './NavigationTemplete/Navigation'
-import User from '../user/User'
+// import User from '../user/User'
+import { Outlet } from 'react-router-dom'
 
 const Layout = () => {
   return (
@@ -9,7 +10,7 @@ const Layout = () => {
         <Navigation/>
       </div>
       <div>
-        <User/>
+      <Outlet />
       </div>
     </>
   )

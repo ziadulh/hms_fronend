@@ -4,6 +4,7 @@ import { VscDashboard } from "react-icons/vsc";
 import { HiChevronLeft } from "react-icons/hi";
 import { BiUser } from "react-icons/bi";
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 
 function Navigation() {
@@ -32,7 +33,8 @@ function Navigation() {
       <Nav title="Dashboard" Icon={VscDashboard}></Nav>
       <div className="divider">
       </div>
-      <Nav title="User" Icon={BiUser}></Nav>
+      
+      <Link to="/admin/user"><Nav title="User" Icon={BiUser}></Nav></Link>
     </div>
   )
 }

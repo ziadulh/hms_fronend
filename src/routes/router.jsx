@@ -5,6 +5,7 @@ import Root from "../components/root/Root";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/admin/layout/Layout";
 import Login from "../components/login/Login";
+import User from "../components/admin/user/User";
 
 const router = createBrowserRouter([
     {
@@ -22,6 +23,14 @@ const router = createBrowserRouter([
     {
         path: "admin",
         element: <Layout />,
+        // loader: rootLoader,
+        children: [
+            {
+                path: "user",
+                element: <User />,
+                // loader: teamLoader,
+            },
+        ],
     }
 ]);
 
