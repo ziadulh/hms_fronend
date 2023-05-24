@@ -7,11 +7,11 @@ const UserState = (props) => {
   let [users, setUsers] = useState([])
 
   //get users 
-  const getUsers = async () => {
+  const getUsers = async (page=0, limit=1) => {
     try {
       // setIsLoaderEnable(true);
-      let page = 0;
-      let limit = 1;
+      // let page = 0;
+      // let limit = 1;
       const response = await fetch(url_local + `api/users/?page=${page}&limit=${limit}`, {
         method: 'GET',
         headers: {
