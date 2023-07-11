@@ -6,6 +6,8 @@ import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/admin/layout/Layout";
 import Login from "../components/login/Login";
 import User from "../components/admin/user/User";
+import Meal from "../components/admin/meal/Meal";
+import Expenditure from "../components/admin/expenditure/Expenditure";
 
 const router = createBrowserRouter([
     {
@@ -28,6 +30,21 @@ const router = createBrowserRouter([
             {
                 path: "user",
                 element: <User />,
+                // loader: teamLoader,
+            },
+            // {
+            //     path: "meal",
+            //     element: <Meal />,
+            //     // loader: teamLoader,
+            // },
+            {
+                path: "meal/:consumer",
+                element: <Meal />,
+                // loader: teamLoader,
+            },
+            {
+                path: "expenditure",
+                element: <Expenditure />,
                 // loader: teamLoader,
             },
         ],

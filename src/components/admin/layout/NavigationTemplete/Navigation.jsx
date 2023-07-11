@@ -2,7 +2,7 @@ import { Nav } from '../NavIconTemplete/Nav'
 import './Navigation.css'
 import { VscDashboard } from "react-icons/vsc";
 import { HiChevronLeft } from "react-icons/hi";
-import { BiUser } from "react-icons/bi";
+import { BiMoney, BiUser } from "react-icons/bi";
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -35,6 +35,8 @@ function Navigation() {
       </div>
       
       <Link to="/admin/user"><Nav title="User" Icon={BiUser}></Nav></Link>
+      <Link to="/admin/meal"><Nav title="Meal" Icon={BiUser}></Nav></Link>
+      <Link to="/admin/expenditure"><Nav title="Expenditure" Icon={BiMoney}></Nav></Link>
     </div>
   )
 }
