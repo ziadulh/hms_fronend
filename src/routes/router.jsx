@@ -8,6 +8,7 @@ import Login from "../components/login/Login";
 import User from "../components/admin/user/User";
 import Meal from "../components/admin/meal/Meal";
 import Expenditure from "../components/admin/expenditure/Expenditure";
+import ProcessBill from "../components/admin/process/ProcessBill";
 
 const router = createBrowserRouter([
     {
@@ -45,6 +46,11 @@ const router = createBrowserRouter([
             {
                 path: "expenditure",
                 element: <Expenditure />,
+                // loader: teamLoader,
+            },
+            {
+                path: "process-bill",
+                element: <ProcessBill />,
                 // loader: teamLoader,
             },
         ],
