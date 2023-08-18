@@ -84,7 +84,8 @@ const Meal = () => {
     console.log(userMeals);
   }
 
-  let submitMealData = async () => {
+  let submitMealData = async (consumer) => {
+    // alert(consumer)
     try {
       const response = await fetch(url_local + "api/meals/create", {
         method: 'POST',
@@ -92,7 +93,7 @@ const Meal = () => {
           'Content-Type': 'application/json',
           'auth_token': localStorage.getItem('auth-token')
         },
-        body: JSON.stringify(userMeals)
+        body: JSON.stringify({userMeals, consumer})
       });
 
       console.log(response);
@@ -132,7 +133,7 @@ const Meal = () => {
         </tbody>
       </table>
       <div style={{ marginLeft: '807px', marginTop: '10px', marginBottom: '20px' }}>
-        <button style={{ background: 'green' }} onClick={() => { submitMealData() }}>Submit</button>
+        <button style={{ background: 'green' }} onClick={() => { submitMealData(params.consumer) }}>Submit</button>
       </div>
     </div>
   )
