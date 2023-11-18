@@ -5,6 +5,7 @@ const ProcessBill = () => {
     const [users, setusers] = useState([])
     const [expenditures, setExpenditures] = useState([]);
     let [formData, setFormData] = useState({ total_cost: 0.00, meal_rate: 1.00, meal_rate: 1.00 });
+    let [previewData, setPreviewData] = useState({});
     // let [totalMealCost, setTotalMealCost] = useState();
 
     let ref_open_meal_preview_modal = useRef(null);
@@ -98,19 +99,16 @@ const ProcessBill = () => {
     }
 
     let submitMealPreviewData = async () => {
-    }
-    
-    let submitFormData = async () => {
-        ref_open_meal_preview_modal.current.click();
-        // console.log(formData);
+        // console.log(previewData);
         try {
+            // console.log(JSON.stringify(previewData));
             const response = await fetch(url_local + "api/show-user-state/process-monthly-data", {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'auth_token': localStorage.getItem('auth-token')
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(previewData)
             });
 
             let json = await response.json();
@@ -118,6 +116,46 @@ const ProcessBill = () => {
         } catch (error) {
 
         }
+    }
+
+    let submitFormData = async () => {
+        // let temp_formData = formData;
+        // temp_formData.meal_rate = (temp_formData.total_cost / temp_formData.total_meal).toFixed(2);
+        // setPreviewData(temp_formData);
+        // console.log(formData);
+        let prev_obj = {};
+        prev_obj["total_cost"] = formData.total_cost;
+        prev_obj["total_meal"] = formData.total_meal;
+        prev_obj["meal_rate"] = parseFloat(formData.total_cost / formData.total_meal).toFixed(2);
+        prev_obj["users"] = [];
+
+        users.map(user => {
+            // console.log(user);
+            let temp_user_obj = {};
+            temp_user_obj['id'] = user.id; // user
+            temp_user_obj['cost_details'] = {}; // expenditure cost details
+            expenditures.map(ep => {
+                // setting expenditure cost details
+                if("expenditure_"+user.id+"_"+ep.id in formData) {
+                    temp_user_obj['cost_details']["ep_" + ep.id] = formData["expenditure_"+user.id+"_"+ep.id];
+                }else{
+                    temp_user_obj['cost_details']["ep_" + ep.id] = 0;
+                }
+
+                // setting meals
+                if('total_meal_' + user.id in formData){
+                    temp_user_obj['total_meal'] = formData['total_meal_' + user.id];
+                }
+            })
+            prev_obj['users'].push(temp_user_obj);
+        })
+
+        // console.log(prev_obj);
+
+        setPreviewData(prev_obj);
+
+        ref_open_meal_preview_modal.current.click();
+        console.log(previewData);
     }
 
     return (
@@ -190,7 +228,7 @@ const ProcessBill = () => {
                 </div>
             </div>
 
-            {/* modal to update user info */}
+            {/* modal user cost */}
             <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" ref={ref_open_meal_preview_modal} hidden>Create</button>
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
@@ -201,10 +239,38 @@ const ProcessBill = () => {
                         </div>
                         <div className="modal-body">
                             <form>
-                                <div className="mb-3">
-                                    <label htmlFor="name" className="form-label">Enter Name</label>
-                                    <input type="text" className="form-control" id="name" name="name"  />
+                                <div className="row">
+                                    <div className="col-md-3">
+                                        <label htmlFor="prev_total_cost" className="form-label">Users</label>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <label htmlFor="prev_total_cost" className="form-label">Total Cost: {previewData.total_cost}</label>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <label htmlFor="name" className="form-label">Total Meal: {previewData.total_meal}</label>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <label htmlFor="name" className="form-label">Meal Rate: {previewData.meal_rate}</label>
+                                    </div>
                                 </div>
+                                {
+                                    users.map(user => {
+                                        return <div className="row" key={'preview_' + user.id}>
+                                            <div className="col-md-3">
+                                                <label htmlFor="prev_total_cost" className="form-label">{user.name}</label>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <label htmlFor="prev_total_cost" className="form-label">Total Cost: {parseFloat(previewData.meal_rate * formData['total_meal_' + user.id]).toFixed(2)}</label>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <label htmlFor="name" className="form-label">Total Meal: {formData['total_meal_' + user.id]}</label>
+                                            </div>
+                                            <div className="col-md-3">
+                                                <label htmlFor="name" className="form-label">Meal Rate: {previewData.meal_rate}</label>
+                                            </div>
+                                        </div>
+                                    })
+                                }
                             </form>
                         </div>
                         <div className="modal-footer">
